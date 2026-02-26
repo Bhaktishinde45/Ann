@@ -1,0 +1,58 @@
+import numpy as np
+
+
+x = []
+for i in range(10):
+    ascii_value = ord(str(i))          
+    binary7 = format(ascii_value, '07b')   
+    bits = [int(bit) for bit in binary7]
+    x.append(bits)
+
+x = np.array(x)
+print("Input Matrix (ASCII Binary for 0-9):")
+print(x)
+
+# Preparing target values: Even = 1, Odd = 0
+print("\nTarget Output (t):")
+t = []
+for i in range(10):
+    if i % 2 == 0:
+        t.append(1)
+    else:
+        t.append(0)
+print(t)
+
+# Initializing weights and bias
+w = np.zeros(7)
+b = 0
+Alpha = 0    
+
+print("\nTraining the Perceptron...\n")
+
+# Training loop
+for epoch in range(10):
+    print("Epoch:", epoch + 1)
+    
+    for j in range(10):
+        # Calculate net input
+        net = np.dot(x[j], w) + b
+        
+        # Activation function
+        if net >= 0:
+            yin = 1
+        else:
+            yin = 0
+        
+        # Error calculation
+        error = t[j] - yin
+        
+        # Updating weights and bias
+        w = w + Alpha * error * x[j]
+        b = b + Alpha * error
+        
+        print("Input Index:", j,
+              "Target:", t[j],
+              "Output:", yin,
+              "Error:", error,
+              "Updated Weights:", w)
+    print()

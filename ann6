@@ -1,0 +1,61 @@
+import numpy as np
+
+x = np.array([[0,0],
+              [0,1],
+              [1,0],
+              [1,1]])
+y = np.array([[0],
+              [1],
+              [1],
+              [0]])
+
+w1=np.random.rand(2,2);
+w2=np.random.rand(2,1);
+
+def sigmoid(x):
+    return 1 / (1 + np.exp(-x))
+    
+def sig_d(y):
+    return y * (1 - y)
+
+    
+epoch = 100000
+lr =0.1
+
+for i in range(epoch):
+
+    h = sigmoid(np.dot(x, w1))
+    o = sigmoid(np.dot(h, w2))
+
+    e = y - o
+    d_o = e * sig_d(o)             
+    d_h = np.dot(d_o, w2.T) * sig_d(h) 
+
+   
+    w2 += np.dot(h.T, d_o) * lr
+    w1 += np.dot(x.T, d_h) * lr
+
+
+
+print("Value of X:",x)
+print("Value of Y:",y)
+
+print("-----------Calculted Weights----------------")
+print("Value of W1:",w1)
+print("Value of W2:",w2)
+print("-----------Calculated Outputs----------------")
+print("Hidden layer output:\n", h)
+print("Final output:\n", o)
+#print(np.round(o).astype(int))
+
+print("Hidden layer output:\n", h) 
+print("Final output:\n", o)
+
+predicted = np.round(o).astype(int).flatten()
+
+print("\n----------- XOR Truth Table -----------")
+print(" X1 | X2 | Expected Y | Predicted Output")
+print("----------------------------------------")
+for i in range(len(x)):
+    print(f" {x[i][0]}  | {x[i][1]}  |     {y[i][0]}  |  {predicted[i]}")
+print("----------------------------------------")

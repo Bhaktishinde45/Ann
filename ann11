@@ -1,0 +1,29 @@
+import tensorflow as tf
+import numpy as np
+
+hrs = np.array([[1],[2],[3],[4],[5],[6],[7],[8]], dtype=float)
+result = np.array([0,0,0,0,0,1,1,1], dtype=float)
+
+model = tf.keras.Sequential([
+    tf.keras.layers.Dense(1, activation='sigmoid')
+])
+
+model.compile(optimizer='adam',
+              loss='binary_crossentropy',
+              metrics=['accuracy'])
+
+model.fit(hrs, result, epochs=400, verbose=0)
+
+
+loss, acc = model.evaluate(hrs, result, verbose=0)
+print("Final Accuracy:", acc)
+
+test = np.array([[5.5]])
+prediction = model.predict(test)
+
+print("Raw Prediction:", prediction)
+
+result = 1 if prediction[0][0] > 0.5 else 0
+
+print("Study Hours:", test[0][0])
+print("Prediction (0=Fail, 1=Pass):", result)

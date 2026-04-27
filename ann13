@@ -1,0 +1,140 @@
+# Image Classification using ConvNet (Easy Code)
+# TensorFlow + CNN + Hyperparameter Tuning + Graph Comparison
+
+import tensorflow as tf
+from tensorflow.keras import layers, models
+from tensorflow.keras.datasets import cifar10
+import matplotlib.pyplot as plt
+
+# Load Dataset
+(x_train, y_train), (x_test, y_test) = cifar10.load_data()
+
+# Normalize data (0 to 1)
+x_train = x_train / 255.0
+x_test = x_test / 255.0
+
+# Class names
+class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
+               'dog', 'frog', 'horse', 'ship', 'truck']
+
+# Show sample image
+plt.imshow(x_train[0])
+plt.title(class_names[y_train[0][0]])
+plt.show()
+
+
+# -------------------------------
+# Model 1 : Basic CNN
+# -------------------------------
+model1 = models.Sequential([
+    layers.Conv2D(32, (3,3), activation='relu', input_shape=(32,32,3)),
+    layers.MaxPooling2D((2,2)),
+
+    layers.Conv2D(64, (3,3), activation='relu'),
+    layers.MaxPooling2D((2,2)),
+
+    layers.Flatten(),
+    layers.Dense(64, activation='relu'),
+    layers.Dense(10, activation='softmax')
+])
+
+model1.compile(optimizer='adam',
+               loss='sparse_categorical_crossentropy',
+               metrics=['accuracy'])
+
+history1 = model1.fit(
+    x_train, y_train,
+    epochs=10,
+    validation_data=(x_test, y_test)
+)
+
+
+# -------------------------------
+# Model 2 : Improved CNN
+# Added Dropout to reduce overfitting
+# -------------------------------
+model2 = models.Sequential([
+    layers.Conv2D(32, (3,3), activation='relu', input_shape=(32,32,3)),
+    layers.MaxPooling2D((2,2)),
+
+    layers.Conv2D(64, (3,3), activation='relu'),
+    layers.MaxPooling2D((2,2)),
+
+    layers.Flatten(),
+    layers.Dense(128, activation='relu'),
+    layers.Dropout(0.5),   # Hyperparameter tuning
+
+    layers.Dense(10, activation='softmax')
+])
+
+model2.compile(optimizer='adam',
+               loss='sparse_categorical_crossentropy',
+               metrics=['accuracy'])
+
+history2 = model2.fit(
+    x_train, y_train,
+    epochs=10,
+    validation_data=(x_test, y_test)
+)
+
+
+# -------------------------------
+# Graph Comparison
+# -------------------------------
+
+# Accuracy Graph
+plt.plot(history1.history['accuracy'], label='Basic CNN Train')
+plt.plot(history1.history['val_accuracy'], label='Basic CNN Test')
+
+plt.plot(history2.history['accuracy'], label='Improved CNN Train')
+plt.plot(history2.history['val_accuracy'], label='Improved CNN Test')
+
+plt.title("Accuracy Comparison")
+plt.xlabel("Epochs")
+plt.ylabel("Accuracy")
+plt.legend()
+plt.show()
+
+
+# Loss Graph
+plt.plot(history1.history['loss'], label='Basic CNN Train Loss')
+plt.plot(history1.history['val_loss'], label='Basic CNN Test Loss')
+
+plt.plot(history2.history['loss'], label='Improved CNN Train Loss')
+plt.plot(history2.history['val_loss'], label='Improved CNN Test Loss')
+
+plt.title("Loss Comparison")
+plt.xlabel("Epochs")
+plt.ylabel("Loss")
+plt.legend()
+plt.show()
+
+
+# Final Evaluation
+test_loss, test_acc = model2.evaluate(x_test, y_test)
+print("Final Test Accuracy:", test_acc)
+
+
+
+
+
+
+# Print one sample image from each class
+
+class_names = ['airplane', 'automobile', 'bird', 'cat', 'deer',
+               'dog', 'frog', 'horse', 'ship', 'truck']
+
+plt.figure(figsize=(15,8))
+
+for i in range(10):
+    # Find first image of each class
+    for j in range(len(y_train)):
+        if y_train[j][0] == i:
+            plt.subplot(2, 5, i + 1)
+            plt.imshow(x_train[j])
+            plt.title(class_names[i])
+            plt.axis('off')
+            break
+
+plt.tight_layout()
+plt.show()

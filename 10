@@ -1,0 +1,78 @@
+import numpy as np 
+
+pat = np.array([[1,1,-1,-1],[1,-1,-1,1],[-1,-1,1,1],[-1,-1,-1,1]]) 
+n = pat.shape[1] 
+
+def training(): 
+    W = np.zeros((n, n)) 
+    print("Weight matrix before removing diagonal:")
+    print(W)
+    
+    W = np.dot(pat.T, pat) 
+    np.fill_diagonal(W, 0)
+    
+    print("\nWeight matrix after removing diagonal:")
+    print(W)
+    return W 
+
+def sign(x): 
+    return np.where(x >= 0, 1, -1) 
+
+def recall(W, test): 
+    x = sign(np.dot(W, test)) 
+    return x 
+
+W = training() 
+test = np.array([1, 1, -1, -1]) 
+
+print("\nTest Pattern:")
+print(test)
+
+output = recall(W, test) 
+
+print("\nRecovered Pattern:")
+print(output)
+
+
+
+
+
+
+
+#########################################
+import numpy as np   # Import NumPy library for matrix operations
+
+# Training patterns stored in Hopfield Network
+P = np.array([[1,1,-1,-1],
+              [1,-1,-1,1],
+              [-1,-1,1,1],
+              [-1,-1,-1,1]])
+
+# Create weight matrix using Hebbian learning rule
+W = np.dot(P.T, P)
+
+# Remove self-connections by making diagonal elements 0
+np.fill_diagonal(W, 0)
+
+# Print weight matrix
+print("Weight Matrix:\n", W)
+
+# Test input pattern
+x = np.array([1,1,-1,-1])
+
+# Recall stored pattern using sign activation function
+y = np.sign(np.dot(W, x))
+
+# Print input and output
+print("\nInput :", x)
+print("Output:", y)
+
+
+
+
+
+
+
+
+
+

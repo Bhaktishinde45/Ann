@@ -1,0 +1,84 @@
+import numpy as np
+
+X = np.array([
+    [0,0],
+    [0,1],
+    [1,0],
+    [1,1]
+])
+
+Y = np.array([
+    [0],
+    [1],
+    [1],
+    [0]
+])
+
+# Random weights
+np.random.seed(0)
+
+W1 = np.random.rand(2,2)
+W2 = np.random.rand(2,1)
+
+# Sigmoid function
+def s(x):
+    return 1 / (1 + np.exp(-x))
+
+# Derivative of sigmoid
+def sd(x):
+    return x * (1 - x)
+
+# Learning rate
+lr = 0.1
+
+# Training
+for i in range(5000):
+
+    # Hidden layer output
+    H = s(np.dot(X, W1))
+
+    # Final output
+    O = s(np.dot(H, W2))
+
+    # Error
+    e = Y - O
+
+    # Backpropagation
+    dO = e * sd(O)
+
+    dH = np.dot(dO, W2.T) * sd(H)
+
+    # Update weights
+    W2 = W2 + np.dot(H.T, dO) * lr
+
+    W1 = W1 + np.dot(X.T, dH) * lr
+
+#Print final weights
+print("Final W1:")
+print(W1)
+
+print("\nFinal W2:")
+print(W2)
+
+#Print output
+print("\nOutput:")
+print(O)
+
+# Convert output into binary values
+FO = []
+
+for value in O:
+
+    if value > 0.5:
+        FO.append(1)
+    else:
+        FO.append(0)
+
+print("\nFinal Output:")
+print(FO)
+
+# Display final result
+print("\nX1 X2 | Expected | Predicted")
+
+for i in range(4):
+    print(X[i], "|", Y[i][0], "|", FO[i])
